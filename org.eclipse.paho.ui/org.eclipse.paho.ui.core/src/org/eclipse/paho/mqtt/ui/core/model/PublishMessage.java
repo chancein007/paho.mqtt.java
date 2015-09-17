@@ -27,10 +27,20 @@ public class PublishMessage extends Bindable {
 	public static final String PROP_TOPIC = "topic";
 	public static final String PROP_RETAIN = "retain";
 	public static final String PROP_PAYLOAD = "payload";
+	public static final String PROP_IS_HEX = "hex";
 
 	private String topic;
 	private QoS qos;
 	private boolean retain;
+	private boolean hex;
+	public boolean isHex() {
+		return hex;
+	}
+
+	public void setHex(boolean hex) {
+		this.hex = hex;
+	}
+
 	private byte[] payload;
 
 	public String getTopic() {
@@ -75,7 +85,7 @@ public class PublishMessage extends Bindable {
 	public String toString() {
 		return new StringBuffer().append(getClass().getSimpleName()).append(" [").append("topic=").append(topic)
 				.append(",").append("qos=").append(qos).append(",").append("retain=").append(retain).append(",")
-				.append("payload=").append(payload).append("]").toString();
+				.append("payload=").append(payload).append(",").append("hex=").append(hex).append("]").toString();
 	}
 
 }

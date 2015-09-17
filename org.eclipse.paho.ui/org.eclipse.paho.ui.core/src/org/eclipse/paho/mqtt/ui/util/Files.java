@@ -101,10 +101,10 @@ public final class Files {
 	 */
 	public static Content read(File file) throws IOException {
 		try {
-			return new Content(readText(file, UTF_8), false);
+			return new Content(readText(file, UTF_8), false,file.getAbsolutePath());
 		}
 		catch (MalformedInputException e) {
-			return new Content(Strings.toHex(readBinary(file)), true);
+			return new Content(Strings.toHex(readBinary(file)), true,file.getAbsolutePath());
 		}
 	}
 
@@ -215,14 +215,20 @@ public final class Files {
 	public static class Content {
 		private final String data;
 		private final boolean binary;
+		private final String filePath;
+
+		public String getFilePath() {
+			return filePath;
+		}
 
 		/**
 		 * @param data
 		 * @param binary
 		 */
-		public Content(String data, boolean binary) {
+		public Content(String data, boolean binary,String filePath) {
 			this.data = data;
 			this.binary = binary;
+			this.filePath=filePath;
 		}
 
 		public String getData() {

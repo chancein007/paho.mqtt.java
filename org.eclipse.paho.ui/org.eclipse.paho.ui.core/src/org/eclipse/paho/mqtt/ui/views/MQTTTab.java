@@ -95,6 +95,7 @@ import org.eclipse.swt.widgets.ToolItem;
 public class MQTTTab extends CTabItem {
 	private final Connection connection;
 	private IEventService eventService;
+	private Content content; 
 
 	/**
 	 * @param parent
@@ -773,7 +774,7 @@ public class MQTTTab extends CTabItem {
 
 		// Hex
 		final Button hex = new Button(group, SWT.CHECK);
-		hex.setText(Messages.MQTT_TAB_GROUP_PUB_HEX);
+		hex.setText(Messages.MQTT_TAB_GROUP_PUB_HEX+111);
 		fd = new FormData();
 		fd.top = new FormAttachment(qosLabel, 0, SWT.CENTER);
 		fd.right = new FormAttachment(100, -4);
@@ -807,6 +808,7 @@ public class MQTTTab extends CTabItem {
 					@Override
 					public void run() {
 						Button button = (Button) e.widget;
+						content=null;
 						if (button.getSelection()) {
 							messageText.setText(Strings.toHex(messageText.getText()));
 							messageText.setEditable(false);
@@ -862,7 +864,7 @@ public class MQTTTab extends CTabItem {
 						String file = fd.open();
 						if (file != null) {
 							try {
-								Content content = Files.read(new File(file));
+								content = Files.read(new File(file));
 								messageText.setText(content.getData());
 								// if (content.isBinary()) {
 								// hex.setSelection(true);
@@ -894,6 +896,15 @@ public class MQTTTab extends CTabItem {
 		btnPub.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if(message.isHex()&&content!=null&&content.isBinary()&&messageText.getText()!=null){
+					try {
+						byte[] payload=Files.readBinary(new File(content.getFilePath()));
+						if(payload!=null){
+						  message.setPayload(payload);
+						}
+					} catch (IOException e1) {
+					}
+				}
 				eventService.sendEvent(Events.of(Selector.ofPublish(), Pair.of(connection, message)));
 			}
 		});
@@ -905,6 +916,7 @@ public class MQTTTab extends CTabItem {
 		dataBinding.bindText(topicText, message, PublishMessage.PROP_TOPIC, Validators.publishTopic);
 		dataBinding.bindTextAsBytes(messageText, message, PublishMessage.PROP_PAYLOAD);
 		dataBinding.bindSelection(retained, message, PublishMessage.PROP_RETAIN);
+		dataBinding.bindSelection(hex, message, PublishMessage.PROP_IS_HEX);
 		dataBinding.onMergedValueChange(new IValueChangeListener() {
 			@Override
 			public void handleValueChange(final ValueChangeEvent event) {
