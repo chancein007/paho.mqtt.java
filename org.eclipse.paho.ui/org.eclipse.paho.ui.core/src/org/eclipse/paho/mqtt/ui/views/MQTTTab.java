@@ -774,7 +774,7 @@ public class MQTTTab extends CTabItem {
 
 		// Hex
 		final Button hex = new Button(group, SWT.CHECK);
-		hex.setText(Messages.MQTT_TAB_GROUP_PUB_HEX+111);
+		hex.setText(Messages.MQTT_TAB_GROUP_PUB_HEX);
 		fd = new FormData();
 		fd.top = new FormAttachment(qosLabel, 0, SWT.CENTER);
 		fd.right = new FormAttachment(100, -4);
